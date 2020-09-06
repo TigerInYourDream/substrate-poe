@@ -13,26 +13,18 @@ pub trait Trait: frame_system::Trait {
     type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
 }
 
-// The pallet's runtime storage items.
 // https://substrate.dev/docs/en/knowledgebase/runtime/storage
 decl_storage! {
     trait Store for Module<T: Trait> as TemplateModule {
-        /// The storage item for our proofs.
-        /// It maps a proof to the user who made the claim and when they made it.
         Proofs: map hasher(blake2_128_concat) Vec<u8> => (T::AccountId, T::BlockNumber);
     }
 }
 
-// Pallets use events to inform users when important changes are made.
-// Event documentation should end with an array that provides descriptive names for parameters.
 // https://substrate.dev/docs/en/knowledgebase/runtime/events
 decl_event! {
     pub enum Event<T> where AccountId = <T as frame_system::Trait>::AccountId {
-        /// Event emitted when a proof has been claimed. [who, claim]
         ClaimCreated(AccountId, Vec<u8>),
-        /// Event emitted when a claim is revoked by the owner. [who, claim]
 		ClaimRevoked(AccountId, Vec<u8>),
-		/// Event evmitted when a claim is transferred from one owner to another
 		ClaimTransfered(AccountId, Vec<u8>, AccountId),
     }
 }
@@ -49,15 +41,10 @@ decl_error! {
     }
 }
 
-// Dispatchable functions allows users to interact with the pallet and invoke state changes.
-// These functions materialize as "extrinsics", which are often compared to transactions.
-// Dispatchable functions must be annotated with a weight and must return a DispatchResult.
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        // Errors must be initialized if they are used by the pallet.
         type Error = Error<T>;
 
-        // Events must be initialized if they are used by the pallet.
         fn deposit_event() = default;
 
         #[weight = 10_000]
